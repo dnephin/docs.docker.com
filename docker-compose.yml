@@ -114,3 +114,11 @@ test:
         - "8000:8000"
     volumes_from:
         - data
+
+linkchecker:
+    build: ./linkchecker
+    command: '-F csv/utf_8//target/output.csv http://docs:8000/'
+    volumes:
+        - ./target:/target
+    links:
+        - serve:docs

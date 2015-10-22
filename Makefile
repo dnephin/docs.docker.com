@@ -1,7 +1,7 @@
-.PHONY: all default build-images fetch clean clean-bucket test serve build release export shell
+.PHONY: all default build-images fetch clean clean-bucket test serve build release export shell linkchecker
 
 PROJECT_NAME ?= docsdockercom
-DOCKER_COMPOSE := docker-compose -p $(PROJECT_NAME)
+DOCKER_COMPOSE ?= docker-compose -p $(PROJECT_NAME)
 DOCKER_IMAGE := docsdockercom:latest
 DOCKER_IP = $(shell python -c "import urlparse ; print urlparse.urlparse('$(DOCKER_HOST)').hostname or ''")
 HUGO_BASE_URL = $(shell test -z "$(DOCKER_IP)" && echo localhost || echo "$(DOCKER_IP)")
@@ -41,6 +41,12 @@ release: build
 
 export: build
 	docker cp $$($(DATA_CONTAINER_CMD)):/public - | gzip > docs-docker-com.tar.gz
+
+linkchecker:
+	mkdir -p target
+	$(DOCKER_COMPOSE) up -d serve
+	$(DOCKER_COMPOSE) run --rm linkchecker
+	$(DOCKER_COMPOSE) stop
 
 shell: build
 	$(DOCKER_COMPOSE) run --rm build /bin/bash
