@@ -2,8 +2,8 @@ data:
     image: busybox
     command: "true"
     volumes:
-        - /docs
-        - /public
+        - ./docs:/docs
+        - ./public:/public
 
 fetch:
     image: docsdockercom:${IMAGE_TAG}
@@ -12,6 +12,8 @@ fetch:
         python fetch_content.py /docs all-projects.yml
         ./touch-up.sh /docs
         "
+    volumes:
+        - '.:/src'
     volumes_from:
         - data
     environment:
@@ -49,7 +51,7 @@ cleanup:
 serve:
     image: docsdockercom:${IMAGE_TAG}
     working_dir: /docs
-    command: "hugo server -d /public --port=8000 --baseUrl=$HUGO_BASE_URL --bind=0.0.0.0"
+    command: "hugo server -d /public --port=8000 --baseUrl=$HUGO_BASE_URL --bind=0.0.0.0 --watch"
     ports:
         - "8000:8000"
     volumes_from:
