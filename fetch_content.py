@@ -91,6 +91,7 @@ def fetch_project(destination, org, repo_name, name, ref, path, ignores=None, ta
     git_info = gather_git_info(org, repo_name, ref)
     archive_url = git_info.pop('archive_url')
 
+    print "Fetching project %s" % archive_url
     resp = requests.get(
         archive_url,
         auth=(os.environ['GITHUB_USERNAME'], os.environ['GITHUB_TOKEN']),
@@ -135,7 +136,6 @@ def fetch_project(destination, org, repo_name, name, ref, path, ignores=None, ta
         target_path = os.path.normpath(os.path.join(destination, target, stripped_path))
         mkdirp(os.path.dirname(target_path))
 
-        print 'extracting', tar_info.name, '->', target_path
         with open(target_path, 'wb') as f:
             f.write(tgz.extractfile(tar_info).read())
 

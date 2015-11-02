@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 DOCS_DIR=$( dirname $( find /docs -name 'build.json' | head -n1 ) )
 BUILD_JSON="${DOCS_DIR}/build.json"
